@@ -167,6 +167,9 @@ examples: clean setup thrift_example
 	go build -o $(BUILD)/examples/bench/runner ./examples/bench/runner.go
 	go build -o $(BUILD)/examples/test_server ./examples/test_server
 
+docker_build:
+	docker build -t uber/tchannel-go-thrift-gen -f Dockerfile.thrift-gen .
+
 thrift_gen:
 	go build -o $(BUILD)/thrift-gen ./thrift/thrift-gen
 	$(BUILD)/thrift-gen --generateThrift --inputFile thrift/test.thrift --outputDir thrift/gen-go/
@@ -174,11 +177,14 @@ thrift_gen:
 	$(BUILD)/thrift-gen --generateThrift --inputFile examples/thrift/example.thrift --outputDir examples/thrift/gen-go
 	$(BUILD)/thrift-gen --generateThrift --inputFile hyperbahn/hyperbahn.thrift --outputDir hyperbahn/gen-go
 
+thrift_gen_docker: docker_build
+	docker run --volume $(PWD):/go/src/github.com/uber/tchannel-go --workdir /go/src/github.com/uber/tchannel-go uber/tchannel-go/thrift-gen make thrift_gen
+
 release_thrift_gen: clean setup
 	GOOS=linux GOARCH=amd64 go build -o $(THRIFT_GEN_RELEASE_LINUX)/thrift-gen ./thrift/thrift-gen
 	GOOS=darwin GOARCH=amd64 go build -o $(THRIFT_GEN_RELEASE_DARWIN)/thrift-gen ./thrift/thrift-gen
 	tar -czf thrift-gen-release.tar.gz $(THRIFT_GEN_RELEASE)
 	mv thrift-gen-release.tar.gz $(THRIFT_GEN_RELEASE)/
 
-.PHONY: all help clean fmt format get_thrift install install_ci install_lint install_glide release_thrift_gen packages_test check_no_test_deps test test_ci lint
+.PHONY: all help clean fmt format get_thrift install install_ci install_lint install_glide release_thrift_gen packages_test check_no_test_deps test test_ci lint docker_build thrift_gen_docker
 .SILENT: all help clean fmt format test lint
