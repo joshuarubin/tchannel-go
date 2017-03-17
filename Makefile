@@ -178,7 +178,7 @@ thrift_gen:
 	$(BUILD)/thrift-gen --generateThrift --inputFile hyperbahn/hyperbahn.thrift --outputDir hyperbahn/gen-go
 
 thrift_gen_docker: docker_build
-	docker run --volume $(PWD):/go/src/github.com/uber/tchannel-go --workdir /go/src/github.com/uber/tchannel-go uber/tchannel-go/thrift-gen make thrift_gen
+	docker run --volume $(PWD):/go/src/github.com/uber/tchannel-go --workdir /go/src/github.com/uber/tchannel-go uber/tchannel-go-thrift-gen make thrift_gen
 
 release_thrift_gen: clean setup
 	GOOS=linux GOARCH=amd64 go build -o $(THRIFT_GEN_RELEASE_LINUX)/thrift-gen ./thrift/thrift-gen

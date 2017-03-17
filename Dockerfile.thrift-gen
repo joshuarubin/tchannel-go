@@ -4,5 +4,5 @@ ENV GOROOT /usr/local/go
 ENV PATH /usr/local/go/bin:${PATH}
 ENV GOPATH /go
 RUN mkdir -p /go
-RUN apt-get update && apt-get install -yq --no-install-recommends ca-certificates curl
+RUN apt-get update && apt-get install -yq --no-install-recommends build-essential ca-certificates curl
 RUN curl -sSL https://storage.googleapis.com/golang/go1.7.5.linux-amd64.tar.gz | tar -xz -C /usr/local
